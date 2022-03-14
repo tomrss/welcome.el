@@ -81,12 +81,16 @@
 (defcustom welcome-menu-items
   '(("Recent files"
      :key "f"
-     :action consult-recent-file
+     :action recentf-open-files
      :icon "history")
     ("Projects"
      :key "p"
      :action project-switch-project
      :icon "code")
+    ("Dired"
+     :key "d"
+     :action dired
+     :icon "file-directory")
     ("Edit configuration"
      :key "c"
      :action (lambda ()
@@ -174,7 +178,7 @@ If POINT is non-nil, open menu item at POINT."
                                      (lambda (menu-item)
                                        (string-match (car menu-item) line))
                                      welcome-menu-items))))
-        (funcall (plist-get (cdr matched-item) :action))))))
+        (call-interactively (plist-get (cdr matched-item) :action))))))
 
 (defun welcome-menu-item (menu-item)
   "Render the MENU-ITEM and register associated key in local map."
