@@ -1,12 +1,14 @@
-;;; welcome.el --- Welcome buffer                    -*- lexical-binding: t; -*-
+;;; welcome.el --- Welcome screen -*- lexical-binding: t; -*-
 
 ;; Copyright (C) 2022  Tommaso Rossi
 
 ;; Author: Tommaso Rossi <tommaso.rossi1@protonmail.com>
+;; Maintainer: Tommaso Rossi <tommaso.rossi1@protonmail.com>
 ;; Created: 2022
 ;; Version: 0.1
-;; Package-Requires: ((emacs "27.1")(dash "2.19.1")(all-the-icons "5.0.0"))
 ;; Keywords: convenience
+;; Package-Requires: ((emacs "27.1")(all-the-icons "5.0.0"))
+;; Homepage: https://github.com/tomrss/welcome.el
 
 ;; This program is free software; you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -23,11 +25,18 @@
 
 ;;; Commentary:
 
-;; 
+;; Simple and lightweight welcome screen.
+;;
+;; It consists in three main sections: an header displaying a banner
+;; and some startup info, a menu that expose some utilities (by
+;; default recent files, projects and other), and a footer with some
+;; build info.  This package SHOULD just offer a function for creating
+;; a simple welcome buffer with a very minimal dedicated major mode.
+;; It SHOULD not do anything strange like registering hooks or other.
 
 ;;; Code:
 
-(require 'dash)
+(require 'seq)
 (require 'subr-x)
 (require 'all-the-icons)
 
@@ -174,7 +183,7 @@ If POINT is non-nil, open menu item at POINT."
     (let* ((beg (line-beginning-position))
            (end (line-end-position))
            (line (buffer-substring-no-properties beg end)))
-      (when-let ((matched-item (car (-filter
+      (when-let ((matched-item (car (seq-filter
                                      (lambda (menu-item)
                                        (string-match (car menu-item) line))
                                      welcome-menu-items))))
@@ -210,8 +219,10 @@ If POINT is non-nil, open menu item at POINT."
   (let ((init-info (if (functionp welcome-init-info)
                        (funcall welcome-init-info)
                      welcome-init-info)))
-    (welcome-insert-centered-line (propertize welcome-message 'face 'welcome-message-face))
-    (welcome-insert-centered-line (propertize init-info 'face 'welcome-startup-info-face)))
+    (welcome-insert-centered-line
+     (propertize welcome-message 'face 'welcome-message-face))
+    (welcome-insert-centered-line
+     (propertize init-info 'face 'welcome-startup-info-face)))
   (insert "\n\n"))
 
 (defun welcome-menu ()
@@ -231,7 +242,8 @@ If POINT is non-nil, open menu item at POINT."
         (insert "  ")
         (insert (propertize version-info 'face 'welcome-message-face))
         (newline)
-        (welcome-insert-centered-line (propertize build-info 'face 'welcome-footer-build-info-face))))))
+        (welcome-insert-centered-line
+         (propertize build-info 'face 'welcome-footer-build-info-face))))))
 
 (defun welcome-goto-first-menu-item ()
   "Bring the point on the first menu item."
