@@ -234,7 +234,7 @@ If POINT is non-nil, open menu item at POINT."
 (defun welcome-footer ()
   "Render the welcome screen footer."
   (let ((version-line (emacs-version)))
-    (when (string-match "^\\(.*\\)(\\(.*\\))\\'" version-line)
+    (when (string-match "^\\(.*\\)(\\(.*\\))" version-line)
       (let ((version-info (match-string 1 version-line))
             (build-info (match-string 2 version-line)))
         (insert (welcome-pad-for-centering (+ 3 (length version-info))))
