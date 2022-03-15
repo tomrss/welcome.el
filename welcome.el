@@ -130,10 +130,7 @@
 (defface welcome-footer-build-info-face '((t (:inherit font-lock-comment-face)))
   "Face used for build info in the footer.")
 
-(defvar welcome-mode-map
-  (let ((map (make-sparse-keymap)))
-    (define-key map (kbd "RET") #'welcome-open-menu-item-at-point)
-    map)
+(defvar welcome-mode-map (make-sparse-keymap)
   "Keymap used in welcome screen.")
 
 ;; TODO horrible function
@@ -170,25 +167,6 @@
     (insert-image spec)
     (insert "\n\n")))
 
-(defun welcome-open-menu-item-at-point (&optional point)
-  "Open the menu item at point by launching related action.
-
-Menu items are specified in `welcome-menu-items'.
-If no matching menu item is found in the current line, do nothing.
-If POINT is non-nil, open menu item at POINT."
-  (interactive)
-  (save-excursion
-    (when point
-      (goto-char point))
-    (let* ((beg (line-beginning-position))
-           (end (line-end-position))
-           (line (buffer-substring-no-properties beg end)))
-      (when-let ((matched-item (car (seq-filter
-                                     (lambda (menu-item)
-                                       (string-match (car menu-item) line))
-                                     welcome-menu-items))))
-        (call-interactively (plist-get (cdr matched-item) :action))))))
-
 (defun welcome-menu-item (menu-item)
   "Render the MENU-ITEM and register associated key in local map."
   (let* ((title (car menu-item))
@@ -204,11 +182,11 @@ If POINT is non-nil, open menu item at POINT."
     (insert "    ")
     (when icon
       (insert (all-the-icons-octicon icon :face 'welcome-menu-item-face))
-      (insert "  "))
+      (insert "\t"))
     (insert (propertize (format "(%s)  " key) 'face 'font-lock-comment-face))
-    ;; TODO do it properly with align-regexp (but seems broken with icons)
     (insert (make-string (max 0 (- 5 (length key))) ?\ ))
-    (insert (propertize title 'face 'welcome-menu-item-face))
+    (insert-text-button title 'action (lambda (b)
+                                        (call-interactively action)))
     (newline)))
 
 (defun welcome-header ()
@@ -248,10 +226,11 @@ If POINT is non-nil, open menu item at POINT."
 (defun welcome-goto-first-menu-item ()
   "Bring the point on the first menu item."
   (goto-char (point-min))
-  (when-let ((first-menu-item-pos
-              (search-forward (car (car welcome-menu-items)) nil t)))
-    (goto-char first-menu-item-pos)
-    (beginning-of-visual-line)))
+  (let* ((first-menu-item (car (car welcome-menu-items)))
+         (first-menu-item-pos (search-forward first-menu-item nil t)))
+    (when first-menu-item-pos
+      (goto-char first-menu-item-pos)
+      (backward-char (length first-menu-item)))))
 
 (define-derived-mode welcome-mode special-mode "Welcome"
   "Simple mode for welcome screen.")
