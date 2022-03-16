@@ -7,7 +7,7 @@
 ;; Created: 2022
 ;; Version: 0.1
 ;; Keywords: convenience
-;; Package-Requires: ((emacs "27.1")(all-the-icons "5.0.0"))
+;; Package-Requires: ((emacs "27.1"))
 ;; Homepage: https://github.com/tomrss/welcome.el
 
 ;; This program is free software; you can redistribute it and/or modify
@@ -36,9 +36,7 @@
 
 ;;; Code:
 
-(require 'seq)
 (require 'subr-x)
-(require 'all-the-icons)
 
 (defgroup welcome nil
   "Welcome buffer."
@@ -180,7 +178,7 @@
     ;; (evil-define-key 'normal welcome-mode-map (kbd key) action)
     (define-key welcome-mode-map (kbd key) action)
     (insert "    ")
-    (when icon
+    (when (and icon (featurep 'all-the-icons))
       (insert (all-the-icons-octicon icon :face 'welcome-menu-item-face))
       (insert "\t"))
     (insert (propertize (format "(%s)  " key) 'face 'font-lock-comment-face))
@@ -192,7 +190,9 @@
 (defun welcome-header ()
   "Render the welcome header."
   (newline)
-  (welcome-insert-image welcome-banner)
+  (if (symbol-value 'window-system)
+      (welcome-insert-image welcome-banner)
+    (insert "\n\n\n"))
   (goto-char (point-max))
   (let ((init-info (if (functionp welcome-init-info)
                        (funcall welcome-init-info)
@@ -216,12 +216,16 @@
       (let ((version-info (match-string 1 version-line))
             (build-info (match-string 2 version-line)))
         (insert (welcome-pad-for-centering (+ 3 (length version-info))))
-        (insert (all-the-icons-fileicon "elisp" :face 'welcome-menu-item-face))
+        (when (featurep 'all-the-icons)
+          (insert (all-the-icons-fileicon "elisp" :face 'welcome-menu-item-face)))
         (insert "  ")
         (insert (propertize version-info 'face 'welcome-message-face))
         (newline)
         (welcome-insert-centered-line
-         (propertize build-info 'face 'welcome-footer-build-info-face))))))
+         (propertize build-info 'face 'welcome-footer-build-info-face))
+        (newline)
+        (welcome-insert-centered-line
+         (propertize emacs-copyright 'face 'welcome-footer-build-info-face))))))
 
 (defun welcome-goto-first-menu-item ()
   "Bring the point on the first menu item."
