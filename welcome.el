@@ -47,19 +47,12 @@
   "Name of the welcome buffer."
   :type 'string)
 
-;; shamelessly stolen from dashboard.el (not the only thing)
 (defcustom welcome-init-info
   (lambda ()
-    (let ((package-count 0) (time (emacs-init-time)))
-      (when (bound-and-true-p package-alist)
-        (setq package-count (length package-activated-list)))
-      (when (boundp 'straight--profile-cache)
-        (setq package-count
-              (+ (hash-table-count straight--profile-cache) package-count)))
-      (if (zerop package-count)
-          (format "Emacs started in %s" time)
-        (format "%d packages loaded in %s" package-count time))))
-  "Init info with packages loaded and init time."
+    (format "Loaded in %s with %d garbage collections"
+            (emacs-init-time)
+            gcs-done))
+  "Init info."
   :type '(function string)
   :group 'dashboard)
 
@@ -73,15 +66,15 @@
   :type 'string)
 
 (defcustom welcome-separator
-  (concat (make-string welcome-window-width ?\u2500)
+  (concat (propertize (make-string welcome-window-width ?\u2500)
+                      'face
+                      'font-lock-comment-face)
           "\n\n")
   "Separator between welcome sections."
   :type 'string)
 
-;; TODO asset in welcome folder
 (defcustom welcome-banner
   (concat (file-name-directory (locate-library "welcome")) "asset/emacs.png")
-  ;; (expand-file-name "asset/emacs.png" user-emacs-directory)
   "Path of the image banner to show in welcome buffer."
   :type 'string)
 
@@ -176,6 +169,7 @@
          (all-the-icons-default-adjust -0.02))
     ;; TODO why this doesn't work here?
     ;; (evil-define-key 'normal welcome-mode-map (kbd key) action)
+    ;; TODO externalize this function?
     (define-key welcome-mode-map (kbd key) action)
     (insert "    ")
     (when (and icon (featurep 'all-the-icons))
@@ -199,6 +193,7 @@
                      welcome-init-info)))
     (welcome-insert-centered-line
      (propertize welcome-message 'face 'welcome-message-face))
+    (newline)
     (welcome-insert-centered-line
      (propertize init-info 'face 'welcome-startup-info-face)))
   (insert "\n\n"))
