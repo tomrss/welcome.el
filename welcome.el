@@ -7,7 +7,7 @@
 ;; Created: 2022
 ;; Version: 0.1
 ;; Keywords: convenience
-;; Package-Requires: ((emacs "27.1"))
+;; Package-Requires: ((emacs "27.1")(all-the-icons "5.0.0"))
 ;; Homepage: https://github.com/tomrss/welcome.el
 
 ;; This program is free software; you can redistribute it and/or modify
@@ -37,6 +37,7 @@
 ;;; Code:
 
 (require 'subr-x)
+(require 'all-the-icons)
 
 (defgroup welcome nil
   "Welcome buffer."
@@ -167,12 +168,9 @@
          (icon (plist-get entry-plist :icon))
          (all-the-icons-scale-factor 1.45)
          (all-the-icons-default-adjust -0.02))
-    ;; TODO why this doesn't work here?
-    ;; (evil-define-key 'normal welcome-mode-map (kbd key) action)
-    ;; TODO externalize this function?
     (define-key welcome-mode-map (kbd key) action)
     (insert "    ")
-    (when (and icon (featurep 'all-the-icons))
+    (when icon
       (insert (all-the-icons-octicon icon :face 'welcome-menu-item-face))
       (insert "\t"))
     (insert (propertize (format "(%s)  " key) 'face 'font-lock-comment-face))
@@ -184,9 +182,7 @@
 (defun welcome-header ()
   "Render the welcome header."
   (newline)
-  (if (symbol-value 'window-system)
-      (welcome-insert-image welcome-banner)
-    (insert "\n\n\n"))
+  (welcome-insert-image welcome-banner)
   (goto-char (point-max))
   (let ((init-info (if (functionp welcome-init-info)
                        (funcall welcome-init-info)
@@ -211,8 +207,7 @@
       (let ((version-info (match-string 1 version-line))
             (build-info (match-string 2 version-line)))
         (insert (welcome-pad-for-centering (+ 3 (length version-info))))
-        (when (featurep 'all-the-icons)
-          (insert (all-the-icons-fileicon "elisp" :face 'welcome-menu-item-face)))
+        (insert (all-the-icons-fileicon "elisp" :face 'welcome-menu-item-face))
         (insert "  ")
         (insert (propertize version-info 'face 'welcome-message-face))
         (newline)
