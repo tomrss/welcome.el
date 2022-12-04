@@ -67,7 +67,8 @@
   :type 'string)
 
 (defcustom welcome-separator
-  (concat (propertize (make-string welcome-window-width ?\u2500)
+  (concat (propertize (make-string
+                       (- welcome-window-width (if (display-graphic-p) 0 1)) ?\u2500)
                       'face
                       'font-lock-comment-face)
           "\n\n")
@@ -135,7 +136,7 @@
 
 ;; TODO don't like this either
 (defun welcome-insert-centered-line (str)
-  "Insert a centered line with content STR." 
+  "Insert a centered line with content STR."
   (insert (welcome-pad-for-centering (length str)))
   (insert str)
   (newline))
@@ -170,9 +171,12 @@
          (all-the-icons-default-adjust -0.02))
     (define-key welcome-mode-map (kbd key) action)
     (insert "    ")
-    (when icon
-      (insert (all-the-icons-octicon icon :face 'welcome-menu-item-face))
-      (insert "\t"))
+    (insert
+     (if (and icon
+              (display-graphic-p))
+         (all-the-icons-octicon icon :face 'welcome-menu-item-face)
+       " "))
+    (insert "\t")
     (insert (propertize (format "(%s)  " key) 'face 'font-lock-comment-face))
     (insert (make-string (max 0 (- 5 (length key))) ?\ ))
     (insert-text-button title 'action (lambda (b)
@@ -182,7 +186,10 @@
 (defun welcome-header ()
   "Render the welcome header."
   (newline)
-  (welcome-insert-image welcome-banner)
+  (if (display-graphic-p)
+      (welcome-insert-image welcome-banner)
+    (dotimes (number 10)
+      (newline)))
   (goto-char (point-max))
   (let ((init-info (if (functionp welcome-init-info)
                        (funcall welcome-init-info)
@@ -207,7 +214,9 @@
       (let ((version-info (match-string 1 version-line))
             (build-info (match-string 2 version-line)))
         (insert (welcome-pad-for-centering (+ 3 (length version-info))))
-        (insert (all-the-icons-fileicon "elisp" :face 'welcome-menu-item-face))
+        (when (and (featurep 'all-the-icons)
+                   (display-graphic-p))
+          (insert (all-the-icons-fileicon "elisp" :face 'welcome-menu-item-face)))
         (insert "  ")
         (insert (propertize version-info 'face 'welcome-message-face))
         (newline)
