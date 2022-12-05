@@ -114,13 +114,13 @@
 (defface welcome-message-face '((t (:inherit default)))
   "Face used for the welcome message.")
 
-(defface welcome-startup-info-face '((t :inherit font-lock-comment-face))
+(defface welcome-startup-info-face '((t :inherit font-lock-comment-face :slant normal))
   "Face used for the startup info in the welcome header.")
 
 (defface welcome-menu-item-face '((t (:inherit font-lock-keyword-face)))
   "Face used for the welcome menu items.")
 
-(defface welcome-footer-build-info-face '((t (:inherit font-lock-comment-face)))
+(defface welcome-footer-build-info-face '((t (:inherit font-lock-comment-face :slant normal)))
   "Face used for build info in the footer.")
 
 (defvar welcome-mode-map (make-sparse-keymap)
