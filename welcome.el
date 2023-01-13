@@ -106,6 +106,14 @@
   "Items to show in the welcome menu section."
   :type 'list)
 
+(defcustom welcome-icons-scale-factor 1.30
+  "Scale factor of the icons showed in menu items.
+It is used as local value for `all-the-icons-scale-factor'.")
+
+(defcustom welcome-icons-adjust -0.05
+  "Vertical adjustment of the icons showed in menu items.
+It is used as local value for `all-the-icons-default-adjust'.")
+
 (defgroup welcome-faces nil
   "Faces used by Welcome."
   :group 'welcome
@@ -140,11 +148,6 @@
   (insert (welcome-pad-for-centering (length str)))
   (insert str)
   (newline))
-;; (defun welcome-insert-centered-line (str)
-;;   (let ((fill-column welcome-window-width))
-;;     (insert str)
-;;     (center-line)
-;;     (newline)))
 
 (defun welcome-insert-image (image)
   "Insert IMAGE."
@@ -167,14 +170,13 @@
          (key (plist-get entry-plist :key))
          (action (plist-get entry-plist :action))
          (icon (plist-get entry-plist :icon))
-         (all-the-icons-scale-factor 1.45)
-         (all-the-icons-default-adjust -0.02))
+         (all-the-icons-scale-factor welcome-icons-scale-factor)
+         (all-the-icons-default-adjust welcome-icons-adjust))
     (define-key welcome-mode-map (kbd key) action)
     (insert "    ")
     (insert
-     (if (and icon
-              (display-graphic-p))
-         (all-the-icons-octicon icon :face 'welcome-menu-item-face)
+     (if (and icon (display-graphic-p))
+         (funcall (car icon) (cdr icon) :face 'welcome-menu-item-face)
        " "))
     (insert "\t")
     (insert (propertize (format "(%s)  " key) 'face 'font-lock-comment-face))
