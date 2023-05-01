@@ -98,7 +98,7 @@
      :action (lambda ()
                (interactive)
                (find-file user-init-file))
-     :icon (all-the-icons-octicon "gear"))
+     :icon (all-the-icons-octicon . "gear"))
     ("Eshell"
      :key "e"
      :action eshell
