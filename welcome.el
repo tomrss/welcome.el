@@ -84,25 +84,25 @@
   '(("Recent files"
      :key "f"
      :action recentf-open-files
-     :icon "history")
+     :icon (all-the-icons-octicon . "history"))
     ("Projects"
      :key "p"
      :action project-switch-project
-     :icon "code")
+     :icon (all-the-icons-octicon . "repo"))
     ("Dired"
      :key "d"
      :action dired
-     :icon "file-directory")
+     :icon (all-the-icons-octicon . "file-directory"))
     ("Edit configuration"
      :key "c"
      :action (lambda ()
                (interactive)
                (find-file user-init-file))
-     :icon "gear")
+     :icon (all-the-icons-octicon "gear"))
     ("Eshell"
      :key "e"
      :action eshell
-     :icon "terminal"))
+     :icon (all-the-icons-octicon . "file-directory")))
   "Items to show in the welcome menu section."
   :type 'list)
 
