@@ -1,0 +1,73 @@
+#+title: welcome.el
+#+author: Tommaso Rossi
+
+Simple and lightweight welcome screen for Emacs.
+
+=welcome.el= just offers a function for creating a simple welcome buffer with a very
+minimal dedicated major mode.
+It does not register any hooks or modify Emacs startup, you should do it yourself
+(see examples below).
+
+** Usage
+
+This package is not on Melpa so can installed via git-based package manager like =straight.el=:
+
+#+begin_src emacs-lisp
+  (straight-use-package '(welcome :type git
+                                  :host github
+                                  :repo "tomrss/welcome.el"
+                                  :files ("welcome.el" "asset")))
+
+  (setq inhibit-startup-screen t)
+
+  (add-hook 'emacs-startup-hook #'welcome-screen)
+#+end_src
+
+Better results can be obtained with the =visual-fill-column= package:
+
+#+begin_src emacs-lisp
+  (straight-use-package 'visual-fill-column)
+
+  (add-hook 'welcome-mode-hook
+            (lambda ()
+              (setq visual-fill-column-width width)
+              (setq visual-fill-column-center-text t)
+              (visual-line-mode +1)
+              (visual-fill-column-mode +1)))
+#+end_src
+
+** Customize menu entries
+
+Set the the plist =welcome-menu-items= as you want:
+
+#+begin_src emacs-lisp
+  (with-eval-after-load 'welcome
+    (setq welcome-menu-items '(("Recent files"
+                                :key "f"             ; key on which to binf the action
+                                :action recentf-open ; action to execute
+                                :icon (all-the-icons-octicon . "history")) ; icon to show
+                               ("Projects"
+                                :key "p"
+                                :action project-switch-project
+                                :icon (all-the-icons-octicon . "repo"))
+                               ("Dired"
+                                :key "d"
+                                :action dired
+                                :icon (all-the-icons-octicon . "file-directory"))
+                               ("Eshell"
+                                :key "e"
+                                :action eshell
+                                :icon (all-the-icons-octicon . "terminal"))
+                               ("Bookmarks"
+                                :key "b"
+                                :action bookmark-jump
+                                :icon (all-the-icons-octicon . "bookmark"))
+                               ("EWW browser"
+                                :key "w"
+                                :action eww
+                                :icon (all-the-icons-octicon . "globe")))))
+#+end_src
+
+** Other customization
+
+See the =welcome= customization group.
