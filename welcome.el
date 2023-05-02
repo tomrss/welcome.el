@@ -108,12 +108,12 @@
 (defcustom welcome-icons-scale-factor 1.30
   "Scale factor of the icons showed in menu items.
 It is used as local value for `all-the-icons-scale-factor'."
-  :type number)
+  :type 'number)
 
 (defcustom welcome-icons-adjust -0.05
   "Vertical adjustment of the icons showed in menu items.
 It is used as local value for `all-the-icons-default-adjust'."
-  :type number)
+  :type 'number)
 
 (defgroup welcome-faces nil
   "Faces used by Welcome."
