@@ -8,7 +8,11 @@ minimal dedicated major mode.
 It does not register any hooks or modify Emacs startup, you should do it yourself
 (see examples below).
 
-** Usage
+* Screenshot
+
+[[./screenshot.png]]
+
+* Usage
 
 This package is not on Melpa so can installed via git-based package manager like =straight.el=:
 
@@ -23,26 +27,35 @@ This package is not on Melpa so can installed via git-based package manager like
   (add-hook 'emacs-startup-hook #'welcome-screen)
 #+end_src
 
-Better results can be obtained with the =visual-fill-column= package:
+Better results can be obtained integrating the =visual-fill-column= package.
+This snippet will start Emacs fullscreen with the Welcome screen centered:
 
 #+begin_src emacs-lisp
+  ;; start fullscreen
+  (setq default-frame-alist `((fullscreen . maximized)))
+
+  ;; use the `visual-fill-column' package
   (straight-use-package 'visual-fill-column)
 
   (add-hook 'welcome-mode-hook
             (lambda ()
-              (setq visual-fill-column-width width)
+              ;; set the width of the visual fill as the `welcome' window width
+              (setq visual-fill-column-width welcome-window-width)
+              ;; center
               (setq visual-fill-column-center-text t)
+              ;; visual line 
               (visual-line-mode +1)
+              ;; activate the mode
               (visual-fill-column-mode +1)))
 #+end_src
 
-** Customize menu entries
+* Customize menu entries
 
 Set the the plist =welcome-menu-items= as you want:
 
 #+begin_src emacs-lisp
   (with-eval-after-load 'welcome
-    (setq welcome-menu-items '(("Recent files"
+    (setq welcome-menu-items '(("Recent files"       ; name of the entry that will be displayed
                                 :key "f"             ; key on which to binf the action
                                 :action recentf-open ; action to execute
                                 :icon (all-the-icons-octicon . "history")) ; icon to show
@@ -68,6 +81,6 @@ Set the the plist =welcome-menu-items= as you want:
                                 :icon (all-the-icons-octicon . "globe")))))
 #+end_src
 
-** Other customization
+* Other customization
 
 See the =welcome= customization group.
