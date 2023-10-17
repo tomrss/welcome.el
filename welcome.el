@@ -5,9 +5,9 @@
 ;; Author: Tommaso Rossi <tommaso.rossi1@protonmail.com>
 ;; Maintainer: Tommaso Rossi <tommaso.rossi1@protonmail.com>
 ;; Created: 2022
-;; Version: 0.1
+;; Version: 0.2.0
 ;; Keywords: convenience
-;; Package-Requires: ((emacs "27.1")(all-the-icons "5.0.0"))
+;; Package-Requires: ((emacs "27.1")(nerd-icons "0.1.0"))
 ;; Homepage: https://github.com/tomrss/welcome.el
 
 ;; This program is free software; you can redistribute it and/or modify
@@ -37,7 +37,7 @@
 ;;; Code:
 
 (require 'subr-x)
-(require 'all-the-icons)
+(require 'nerd-icons)
 
 (defgroup welcome nil
   "Welcome buffer."
@@ -83,36 +83,36 @@
   '(("Recent files"
      :key "f"
      :action recentf-open-files
-     :icon (all-the-icons-octicon . "history"))
+     :icon (nerd-icons-octicon . "nf-oct-history"))
     ("Projects"
      :key "p"
      :action project-switch-project
-     :icon (all-the-icons-octicon . "repo"))
+     :icon (nerd-icons-octicon . "nf-oct-repo"))
     ("Dired"
      :key "d"
      :action dired
-     :icon (all-the-icons-octicon . "file-directory"))
+     :icon (nerd-icons-sucicon . "nf-custom-folder_oct"))
     ("Edit configuration"
      :key "c"
      :action (lambda ()
                (interactive)
-               (find-file user-init-file))
-     :icon (all-the-icons-octicon . "gear"))
+               (project-switch-project user-emacs-directory))
+     :icon (nerd-icons-octicon . "nf-oct-gear"))
     ("Eshell"
      :key "e"
      :action eshell
-     :icon (all-the-icons-octicon . "file-directory")))
+     :icon (nerd-icons-octicon . "nf-oct-terminal")))
   "Items to show in the welcome menu section."
   :type 'list)
 
-(defcustom welcome-icons-scale-factor 1.30
+(defcustom welcome-icons-scale-factor 1.0
   "Scale factor of the icons showed in menu items.
-It is used as local value for `all-the-icons-scale-factor'."
+It is used as local value for `nerd-icons-scale-factor'."
   :type 'number)
 
-(defcustom welcome-icons-adjust -0.05
+(defcustom welcome-icons-adjust 0.0
   "Vertical adjustment of the icons showed in menu items.
-It is used as local value for `all-the-icons-default-adjust'."
+It is used as local value for `nerd-icons-default-adjust'."
   :type 'number)
 
 (defgroup welcome-faces nil
@@ -217,9 +217,9 @@ It is used as local value for `all-the-icons-default-adjust'."
       (let ((version-info (match-string 1 version-line))
             (build-info (match-string 2 version-line)))
         (insert (welcome-pad-for-centering (+ 3 (length version-info))))
-        (when (and (featurep 'all-the-icons)
+        (when (and (featurep 'nerd-icons)
                    (display-graphic-p))
-          (insert (all-the-icons-fileicon "elisp" :face 'welcome-menu-item-face)))
+          (insert (nerd-icons-sucicon "nf-custom-emacs" :face 'welcome-menu-item-face)))
         (insert "  ")
         (insert (propertize version-info 'face 'welcome-message-face))
         (newline)
