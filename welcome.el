@@ -101,7 +101,15 @@
     ("Eshell"
      :key "e"
      :action eshell
-     :icon (nerd-icons-octicon . "nf-oct-terminal")))
+     :icon (nerd-icons-octicon . "nf-oct-terminal"))
+    ("Bookmarks"
+     :key "b"
+     :action bookmark-jump
+     :icon (nerd-icons-octicon . "nf-oct-bookmark"))
+    ("EWW browser"
+     :key "w"
+     :action eww
+     :icon (nerd-icons-octicon . "nf-oct-globe")))
   "Items to show in the welcome menu section."
   :type 'list)
 
