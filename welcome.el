@@ -220,22 +220,27 @@ It is used as local value for `nerd-icons-default-adjust'."
 
 (defun welcome-footer ()
   "Render the welcome screen footer."
-  (let ((version-line (emacs-version)))
-    (when (string-match "^\\(.*\\)(\\(.*\\))" version-line)
-      (let ((version-info (match-string 1 version-line))
-            (build-info (match-string 2 version-line)))
-        (insert (welcome-pad-for-centering (+ 3 (length version-info))))
-        (when (and (featurep 'nerd-icons)
-                   (display-graphic-p))
-          (insert (nerd-icons-sucicon "nf-custom-emacs" :face 'welcome-menu-item-face)))
-        (insert "  ")
-        (insert (propertize version-info 'face 'welcome-message-face))
-        (newline)
-        (welcome-insert-centered-line
-         (propertize build-info 'face 'welcome-footer-build-info-face))
-        (newline)
-        (welcome-insert-centered-line
-         (propertize emacs-copyright 'face 'welcome-footer-build-info-face))))))
+  (let ((version-info (format "GNU Emacs %s" emacs-version))
+        (build-info (format "build %s for %s%s"
+                            emacs-build-number
+                            system-configuration
+                            (if emacs-build-time
+		                        (format-time-string
+					             " of %Y-%m-%d"
+                                 emacs-build-time)
+		                      ""))))
+    (insert (welcome-pad-for-centering (+ 3 (length version-info))))
+    (when (and (featurep 'nerd-icons)
+               (display-graphic-p))
+      (insert (nerd-icons-sucicon "nf-custom-emacs" :face 'welcome-menu-item-face)))
+    (insert "  ")
+    (insert (propertize version-info 'face 'welcome-message-face))
+    (newline)
+    (welcome-insert-centered-line
+     (propertize build-info 'face 'welcome-footer-build-info-face))
+    (newline)
+    (welcome-insert-centered-line
+     (propertize emacs-copyright 'face 'welcome-footer-build-info-face))))
 
 (defun welcome-goto-first-menu-item ()
   "Bring the point on the first menu item."
